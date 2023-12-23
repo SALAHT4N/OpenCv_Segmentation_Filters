@@ -101,6 +101,34 @@ class FilterButtonsView:
         self.parent.wait_window(line_popup.top)
         selected_value = line_popup.selected_value
 
+        kernel = None
+        if selected_value == "+45":
+            kernel = np.array([
+                [-2,-1,0],
+                [-1,0,1],
+                [0,1,2]
+            ])
+        elif selected_value == "-45":
+            kernel = np.array([
+                [0,1,2],
+                [-1,0,1],
+                [-2,-1,0]
+            ])
+        elif selected_value == "Vertical":
+            kernel = np.array([
+                [-1,0,1],
+                [-2,0,2],
+                [-1,0,1]
+            ])
+        else:
+            kernel = np.array([
+                [-1,-2,-1],
+                [0,0,0],
+                [1,2,1]
+            ])
+        enhanced = self.opencv_helper.apply_filter(self.state.current_image, kernel)
+        self.update_state(f"{selected_value} edge detection", enhanced)
+        self.image_app_mediator.notify(self.state.current_image, "set_image")
 
 
   def thresholding(self):
