@@ -1,8 +1,8 @@
 import tkinter as tk
 
 class AppliedFiltersView:
-  def __init__(self, parent, state):
-      self.state = state
+  def __init__(self, parent, image_app_mediator):
+      self.image_app_mediator = image_app_mediator
       self.parent = parent
       self.view = tk.Frame(self.parent)
       self.view.pack(side=tk.RIGHT, fill=tk.Y)
