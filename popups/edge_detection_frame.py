@@ -8,7 +8,7 @@ class EdgeDetectionPopup:
         self.top = tk.Toplevel(parent)
         self.top.title("Edge Detection Options")
 
-        options = ["Option 1", "Option 2", "Option 3", "Option 4"]
+        options = ["+45", "-45", "Vertical", "Horizontal"]
         self.selected_option = tk.StringVar()
         self.selected_option.set(options[0])  # Default selection
 
@@ -20,6 +20,7 @@ class EdgeDetectionPopup:
         ok_button.pack(pady=10)
 
     def ok_button_pressed(self):
+        self.selected_value = self.selected_option.get()
         self.top.destroy()
 
 # You can add additional methods or modify as needed for edge detection options

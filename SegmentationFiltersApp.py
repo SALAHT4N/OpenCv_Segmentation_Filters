@@ -21,6 +21,10 @@ class OpenCvHelper: # facade pattern to simplify OpenCv (better testability, low
     def apply_filter(self, image, kernel):
         return cv.filter2D(image, -1, kernel)
     
+    def threshold(self, image, value):
+        _, dst = cv.threshold(image, value, 255, 0)
+        return dst
+    
     def remove_response_lower_than_threshold(self, image, image_enhanced, threshold):
         for i in range(image_enhanced.shape[0]):
             for j in range (image_enhanced.shape[1]):
@@ -57,7 +61,8 @@ class ImageAppMediator:
             image = self.image_converter.convert_cv_to_tinkter(data)
             self.image_view.display_image(image)
             self.applied_filters_view.listbox.insert(tk.END, self.state.applied_filters[-1])
-            
+        elif tokens[0] == "clear":
+            self.applied_filters_view.listbox.delete(0, tk.END)
 
 
 if __name__ == "__main__":

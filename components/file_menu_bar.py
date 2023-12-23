@@ -44,6 +44,7 @@ class FileMenuBar:
       self.state.set_current_image(cv_image)
       self.state.add_image(cv_image)
       self.state.add_filter("Initial")
+      self.image_app_mediator.notify("", "clear")
       self.image_app_mediator.notify(cv_image, "set_image")
 
   def save_file(self):

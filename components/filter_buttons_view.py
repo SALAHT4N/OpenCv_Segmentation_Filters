@@ -97,9 +97,9 @@ class FilterButtonsView:
           self.image_app_mediator.notify(self.state.current_image, "set_image")
 
   def edge_detection(self):
-        line_popup = EdgeDetectionPopup(self.parent)
-        self.parent.wait_window(line_popup.top)
-        selected_value = line_popup.selected_value
+        edge_popup = EdgeDetectionPopup(self.parent)
+        self.parent.wait_window(edge_popup.top)
+        selected_value = edge_popup.selected_value
 
         kernel = None
         if selected_value == "+45":
@@ -136,11 +136,15 @@ class FilterButtonsView:
       self.parent.wait_window(threshold_popup.top)
       selected_value = threshold_popup.selected_value
       if selected_value is not None:
-          print(f"Thresholding Value Selected: {selected_value}")
+          enhanced = self.opencv_helper.threshold(self.state.current_image, selected_value)
+          self.update_state(f"{selected_value} threshold", enhanced)
+          self.image_app_mediator.notify(self.state.current_image, "set_image")
+          
+          
           
 
   def custom_detection(self):
-          
+
       custom_popup = CustomPopup(self.parent)
       self.parent.wait_window(custom_popup.top)
       kernel = custom_popup.entered_values
