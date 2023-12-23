@@ -50,7 +50,7 @@ class ImageAppMediator:
 
         self.menubar = FileMenuBar(root, self, state, opencv_helper)
         self.filter_buttons_view = FilterButtonsView(root, self, state, opencv_helper)
-        self.applied_filters_view = AppliedFiltersView(root, self)
+        self.applied_filters_view = AppliedFiltersView(root, self, state)
         self.image_view = ImageView(root, self)
         self.root.config(menu = self.menubar.menu_bar)
     
@@ -61,6 +61,11 @@ class ImageAppMediator:
             image = self.image_converter.convert_cv_to_tinkter(data)
             self.image_view.display_image(image)
             self.applied_filters_view.listbox.insert(tk.END, self.state.applied_filters[-1])
+
+        elif tokens[0] == "update_image":
+            image = self.image_converter.convert_cv_to_tinkter(data)
+            self.image_view.display_image(image)
+            
         elif tokens[0] == "clear":
             self.applied_filters_view.listbox.delete(0, tk.END)
 

@@ -1,7 +1,8 @@
 import tkinter as tk
 
 class AppliedFiltersView:
-  def __init__(self, parent, image_app_mediator):
+  def __init__(self, parent, image_app_mediator, state):
+      self.state = state
       self.image_app_mediator = image_app_mediator
       self.parent = parent
       self.view = tk.Frame(self.parent)
@@ -15,6 +16,8 @@ class AppliedFiltersView:
       self.listbox.bind("<<ListboxSelect>>", self.on_selection)
 
   def on_selection(self, event):
-      selected_index = self.listbox.curselection()
-      if selected_index:
-          print(f"Selected Element: {self.listbox.get(selected_index)}")
+      selected_index = self.listbox.curselection()[0]
+      if selected_index is not None:
+          print(selected_index)
+          self.state.current_image = self.state.images_history[selected_index]
+          self.image_app_mediator.notify(self.state.images_history[selected_index], "update_image")
