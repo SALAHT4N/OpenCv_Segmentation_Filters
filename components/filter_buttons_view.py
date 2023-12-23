@@ -139,13 +139,15 @@ class FilterButtonsView:
           enhanced = self.opencv_helper.threshold(self.state.current_image, selected_value)
           self.update_state(f"{selected_value} threshold", enhanced)
           self.image_app_mediator.notify(self.state.current_image, "set_image")
-          
-          
-          
 
   def custom_detection(self):
-
       custom_popup = CustomPopup(self.parent)
       self.parent.wait_window(custom_popup.top)
       kernel = custom_popup.entered_values
-      print(kernel)
+      filter_name = custom_popup.name
+
+      if kernel is not None:
+          enhanced = self.opencv_helper.apply_filter(self.state.current_image, kernel)
+          self.update_state(f"{filter_name} filter", enhanced)
+          self.image_app_mediator.notify(self.state.current_image, "set_image")
+      
