@@ -56,6 +56,7 @@ class ImageAppMediator:
         if tokens[0] == "set_image":          
             image = self.image_converter.convert_cv_to_tinkter(data)
             self.image_view.display_image(image)
+            self.applied_filters_view.listbox.insert(tk.END, self.state.applied_filters[-1])
             
 
 
