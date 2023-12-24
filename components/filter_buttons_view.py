@@ -18,13 +18,14 @@ class FilterButtonsView:
       filters_label = tk.Label(self.view, text="Filters", font=("Helvetica", 10, "bold"), bg="lightgray")
       filters_label.pack(side=tk.TOP, pady=5)
 
-      button_names = ["Point Detection", "Line Detection", "Edge Detection", "LoG", "Thresholding", "Custom"]
-      button_handlers = [self.point_detection, self.line_detection, self.edge_detection, self.log_detection,
-                           self.thresholding, self.custom_detection]
+      button_names = ["Point Detection", "Line Detection", "Edge Detection", "LoG (2dFilter)", "Log (openCv)" , "Thresholding", "Custom", "Auto Thresholding", "Zero Crossing", "Scale Up" ]
+      button_handlers = [self.point_detection, self.line_detection, self.edge_detection, self.log_detection, self.log_detection_2,
+                           self.thresholding, self.custom_detection, self.auto_thresholding, self.zero_crossing, self.scale_up]
 
       for name, handler in zip(button_names, button_handlers):
           button = tk.Button(self.view, text=name, command=handler, width=15)
           button.pack(side=tk.TOP, pady=5)
+
   def update_state(self, filter_name, enhanced):
       self.state.add_filter(filter_name)
       self.state.add_image(enhanced)
@@ -58,10 +59,23 @@ class FilterButtonsView:
               [0,0,-1,0,0],
           ]
       )
+
       enhanced = self.opencv_helper.apply_filter(self.state.current_image, log_kernel)
+    #   scaled_up = self.opencv_helper.scale_up(enhanced)
       self.update_state("Laplacian of Gaussian", enhanced)
+      self.image_app_mediator.notify(enhanced, "set_image")
+
+  def log_detection_2(self):
+      enhanced = self.opencv_helper.laplacian_of_guassian(self.state.current_image)
+    #   enhanced = self.opencv_helper.scale_up(enhanced)
+      self.update_state("Laplacian of Guassian", enhanced)
       self.image_app_mediator.notify(self.state.current_image, "set_image")
-      
+
+  def scale_up(self):
+      enhanced = self.opencv_helper.scale_up(self.state.current_image)
+      self.update_state("Scaled up", enhanced)
+      self.image_app_mediator.notify(self.state.current_image, "set_image")
+
   def line_detection(self):
       line_popup = LineDetectionPopup(self.parent)
       self.parent.wait_window(line_popup.top)
@@ -151,3 +165,25 @@ class FilterButtonsView:
           self.update_state(f"{filter_name} filter", enhanced)
           self.image_app_mediator.notify(self.state.current_image, "set_image")
       
+  def auto_thresholding(self):
+      enhanced, value = self.opencv_helper.automatic_thresholding(self.state.current_image)
+      self.update_state(f"auto threshold {value}", enhanced)
+      self.image_app_mediator.notify(self.state.current_image, "set_image")
+
+  def zero_crossing(self):
+    #   log_kernel = np.array(
+    #       [
+    #           [0,0,-1,0,0],
+    #           [0,-1,-2,-1,0],
+    #           [-1,-2,16,-2,-1],
+    #           [0,-1,-2,-1,0],
+    #           [0,0,-1,0,0],
+    #       ]
+    #   )
+    #   enhanced = self.opencv_helper.apply_filter(self.state.current_image, log_kernel)
+      enhanced = self.opencv_helper.laplacian_of_guassian(self.state.current_image)
+      enhanced = self.opencv_helper.threshold(enhanced, 0)
+      enhanced = self.opencv_helper.zero_crossing(enhanced)
+
+      self.update_state(f"zero crossing", enhanced)
+      self.image_app_mediator.notify(self.state.current_image, "set_image")

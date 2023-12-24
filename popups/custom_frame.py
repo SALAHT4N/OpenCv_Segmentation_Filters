@@ -57,7 +57,7 @@ class CustomPopup:
                 for j in range(self.kernel_size):
                     value_str = self.entry_grid[i][j].get()
                     if value_str:
-                        self.entered_values[i][j] = int(value_str)
+                        self.entered_values[i][j] = float(value_str)
             self.name = self.name_entry.get()
             self.top.destroy()
 
