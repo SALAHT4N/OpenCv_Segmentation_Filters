@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 class LineDetectionPopup:
     def __init__(self, parent):
@@ -13,7 +14,7 @@ class LineDetectionPopup:
         self.selected_option.set(options[0])  # Default selection
 
         for option in options:
-            radio_button = tk.Radiobutton(self.top, text=option, variable=self.selected_option, value=option, width=30)
+            radio_button = ttk.Radiobutton(self.top, text=option, variable=self.selected_option, value=option, width=30, style='Dark.TRadiobutton')
             radio_button.pack(anchor=tk.W)
 
         ok_button = tk.Button(self.top, text="OK", command=self.ok_button_pressed)

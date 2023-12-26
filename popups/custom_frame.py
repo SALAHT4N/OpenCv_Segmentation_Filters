@@ -13,20 +13,20 @@ class CustomPopup:
         self.top = tk.Toplevel(parent)
         self.top.title("Custom Options")
 
-        name_label = tk.Label(self.top, text="Name:")
+        name_label = ttk.Label(self.top, text="Name:", style='Dark.TLabel')
         name_label.grid(row=0, column=0, pady=5)
-        self.name_entry = tk.Entry(self.top)
+        self.name_entry = ttk.Entry(self.top)
         self.name_entry.grid(row=0, column=1, pady=5)
 
-        kernel_label = tk.Label(self.top, text="Kernel Size:")
+        kernel_label = ttk.Label(self.top, text="Kernel Size:", style='Dark.TLabel')
         kernel_label.grid(row=1, column=0, pady=5)
-        self.kernel_entry = tk.Entry(self.top)
+        self.kernel_entry = ttk.Entry(self.top)
         self.kernel_entry.grid(row=1, column=1, pady=5)
 
         register_button = tk.Button(self.top, text="Register", command=self.register_kernel_size)
         register_button.grid(row=2, column=0, columnspan=2, pady=10)
 
-        self.frame = tk.Frame(self.top)
+        self.frame = ttk.Frame(self.top)
         self.frame.grid(row=3, column=0, columnspan=2, pady=10)
 
         ok_button = tk.Button(self.top, text="OK", command=self.ok_button_pressed)

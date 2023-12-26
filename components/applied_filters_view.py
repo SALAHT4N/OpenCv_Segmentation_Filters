@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 class AppliedFiltersView:
   def __init__(self, parent, image_app_mediator, state):
@@ -7,6 +8,10 @@ class AppliedFiltersView:
       self.parent = parent
       self.view = tk.Frame(self.parent)
       self.view.pack(side=tk.RIGHT, fill=tk.Y)
+
+      label = ttk.Label(self.view, text="Applied Filters", font=("Helvetica", 10),  style='Dark.TLabel')
+      label.pack(side=tk.TOP, pady=5)
+
       self.scrollbar = tk.Scrollbar(self.view, orient=tk.VERTICAL)
       self.listbox = tk.Listbox(self.view, yscrollcommand=self.scrollbar.set, selectmode=tk.SINGLE)
       self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)

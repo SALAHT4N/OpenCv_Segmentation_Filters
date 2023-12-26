@@ -7,6 +7,7 @@ from components.image_view import ImageView
 from shared.application_state import ApplicationState
 from PIL import Image, ImageTk
 import numpy as np
+from shared.application_style import AppStyles
 
 class OpenCvHelper: # facade pattern to simplify OpenCv (better testability, low coupling)
     def open_as_grayscale(self, path):
@@ -20,6 +21,10 @@ class OpenCvHelper: # facade pattern to simplify OpenCv (better testability, low
     
     def apply_filter(self, image, kernel):
         return cv.filter2D(image, -1, kernel)
+    
+    def adaptive_threshold(self, image):
+        adaptive_thresh = cv.adaptiveThreshold(image, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 5,1)
+        return adaptive_thresh
     
     def threshold(self, image, value):
         _, dst = cv.threshold(image, value, 255, 0)
@@ -101,17 +106,20 @@ class ImageConverter:
         return ImageTk.PhotoImage(pil_image)
 
 class ImageAppMediator:
-    def __init__(self, root, title, state, opencv_helper, image_converter):
+    def __init__(self, root, title, state, opencv_helper, image_converter, styles):
         self.root = root
+        self.styles = styles
         self.state = state
         self.root.title(title)
         self.opencv_helper = opencv_helper
         self.image_converter = image_converter
 
+        AppStyles.apply_styles(self.root, self.styles)
+        
         self.menubar = FileMenuBar(root, self, state, opencv_helper)
-        self.filter_buttons_view = FilterButtonsView(root, self, state, opencv_helper)
+        self.filter_buttons_view = FilterButtonsView(root, self, state, opencv_helper, styles)
         self.applied_filters_view = AppliedFiltersView(root, self, state)
-        self.image_view = ImageView(root, self)
+        self.image_view = ImageView(root, self, styles)
         self.root.config(menu = self.menubar.menu_bar)
     
     def notify(self, data, command):
@@ -134,12 +142,15 @@ if __name__ == "__main__":
     state = ApplicationState()
     root = tk.Tk()
 
+    dark_mode_style = AppStyles.get_dark_mode_style()
+
     app = ImageAppMediator(
         root=root, 
         title="Segmentation Filters",
         state=state,
         opencv_helper=OpenCvHelper(),
-        image_converter=ImageConverter())
+        image_converter=ImageConverter(),
+        styles=dark_mode_style)
     
     root.geometry("1000x460")
     root.mainloop()

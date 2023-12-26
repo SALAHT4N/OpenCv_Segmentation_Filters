@@ -10,17 +10,17 @@ class ThresholdingPopup:
         self.top.title("Thresholding Options")
 
         # Create a scale (trackbar) for selecting the threshold value
-        self.threshold_scale = ttk.Scale(self.top, from_=0, to=255, orient=tk.HORIZONTAL, length=200, command=self.update_label)
+        self.threshold_scale = ttk.Scale(self.top, from_=0, to=255, orient=tk.HORIZONTAL, length=200, command=self.update_label, style='Dark.Horizontal.TScale')
         self.threshold_scale.set(127)  # Default threshold value
         self.threshold_scale.pack(pady=10)
 
         # Label to display the current value
-        self.value_label = tk.Label(self.top, text=f"Current Value: {int(self.threshold_scale.get())}")
+        self.value_label = ttk.Label(self.top, text=f"Current Value: {int(self.threshold_scale.get())}")
         self.value_label.pack(pady=5)
 
         # Labels to indicate the min and max values
-        min_label = tk.Label(self.top, text="0")
-        max_label = tk.Label(self.top, text="255")
+        min_label = ttk.Label(self.top, text="0")
+        max_label = ttk.Label(self.top, text="255")
         min_label.pack(side=tk.LEFT, padx=10)
         max_label.pack(side=tk.RIGHT, padx=10)
 

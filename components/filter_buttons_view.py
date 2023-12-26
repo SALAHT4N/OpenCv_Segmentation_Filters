@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import numpy as np
 from popups.line_detection_frame import LineDetectionPopup
 from popups.edge_detection_frame import EdgeDetectionPopup
@@ -6,20 +7,20 @@ from popups.thresholding_frame import ThresholdingPopup
 from popups.custom_frame import CustomPopup
 
 class FilterButtonsView:
-  def __init__(self, parent, image_app_mediator, state, opencv_helper):
+  def __init__(self, parent, image_app_mediator, state, opencv_helper, styles):
       self.image_app_mediator = image_app_mediator
-      self.view = tk.Frame(parent, width=150, bg="lightgray")
+      self.view = tk.Frame(parent, width=150, background=styles['top-frame'])
       self.view.pack(side=tk.LEFT, fill=tk.Y)
       self.parent = parent
       self.opencv_helper = opencv_helper
       self.state = state
 
-      filters_label = tk.Label(self.view, text="Filters", font=("Helvetica", 10, "bold"), bg="lightgray")
+      filters_label = ttk.Label(self.view, text="Filters", font=("Helvetica", 10),  style='Dark.TLabel')
       filters_label.pack(side=tk.TOP, pady=5)
 
-      button_names = ["Point Detection", "Line Detection", "Edge Detection", "LoG (2dFilter)", "Log (openCv)" , "Thresholding", "Custom", "Auto Thresholding", "Zero Crossing", "Scale Up" ]
+      button_names = ["Point Detection", "Line Detection", "Edge Detection", "LoG (2dFilter)", "Log (openCv)" , "Thresholding", "Custom", "Auto Thresholding", "Zero Crossing", "Adaptive Threshold","Scale Up"]
       button_handlers = [self.point_detection, self.line_detection, self.edge_detection, self.log_detection, self.log_detection_2,
-                           self.thresholding, self.custom_detection, self.auto_thresholding, self.zero_crossing, self.scale_up]
+                           self.thresholding, self.custom_detection, self.auto_thresholding, self.zero_crossing,self.adaptive_threshold, self.scale_up]
 
       for name, handler in zip(button_names, button_handlers):
           button = tk.Button(self.view, text=name, command=handler, width=15)
@@ -29,6 +30,11 @@ class FilterButtonsView:
       self.state.add_filter(filter_name)
       self.state.add_image(enhanced)
       self.state.set_current_image(enhanced)
+
+  def adaptive_threshold(self):
+      enhanced = self.opencv_helper.adaptive_threshold(self.state.current_image)
+      self.update_state("adaptive thresholding", enhanced)
+      self.image_app_mediator.notify(self.state.current_image, "set_image")
 
   def point_detection(self):
       point_kernel = np.array(
@@ -93,12 +99,15 @@ class FilterButtonsView:
                     [-1,2,-1],
                     [-1,2,-1]
                 ])
-          else:
+          elif selected_value == "Horizontal":
               kernel = np.array([
                   [-1,-1,-1],
                   [2,2,2],
                   [-1,-1,-1]
               ])
+          else:
+              return
+          
           enhanced = self.opencv_helper.apply_filter(self.state.current_image, kernel)
           self.update_state(f"{selected_value} line detection", enhanced)
           self.image_app_mediator.notify(self.state.current_image, "set_image")
@@ -127,12 +136,14 @@ class FilterButtonsView:
                 [-2,0,2],
                 [-1,0,1]
             ])
-        else:
+        elif selected_value == "Horizontal":
             kernel = np.array([
                 [-1,-2,-1],
                 [0,0,0],
                 [1,2,1]
             ])
+        else:
+            return
         enhanced = self.opencv_helper.apply_filter(self.state.current_image, kernel)
         self.update_state(f"{selected_value} edge detection", enhanced)
         self.image_app_mediator.notify(self.state.current_image, "set_image")
