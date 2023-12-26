@@ -4,7 +4,6 @@ from popups.line_detection_frame import LineDetectionPopup
 from popups.edge_detection_frame import EdgeDetectionPopup
 from popups.thresholding_frame import ThresholdingPopup
 from popups.custom_frame import CustomPopup
-from popups.point_detection_frame import PointDetectionPopup
 
 class FilterButtonsView:
   def __init__(self, parent, image_app_mediator, state, opencv_helper):
@@ -32,20 +31,14 @@ class FilterButtonsView:
       self.state.set_current_image(enhanced)
 
   def point_detection(self):
-      point_popup = PointDetectionPopup(self.parent)
-      self.parent.wait_window(point_popup.top)
       point_kernel = np.array(
           [
               [-1, -1, -1],
               [-1,  8, -1],
               [-1, -1, -1]
           ]
-        ) 
-      threshold = point_popup.threshold_value
-      
+        )
       enhanced = self.opencv_helper.apply_filter(self.state.current_image, point_kernel)
-      self.opencv_helper.remove_response_lower_than_threshold(self.state.current_image, enhanced, threshold)
-      
       self.update_state("point detection", enhanced)
       self.image_app_mediator.notify(self.state.current_image, "set_image")
 
